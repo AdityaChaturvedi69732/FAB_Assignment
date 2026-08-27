@@ -1,0 +1,292 @@
+<title>FAB Agent Evaluation</title>
+<style>
+  :root {
+    --bg: #F4F6F8;
+    --surface: #FFFFFF;
+    --surface-2: #EEF1F4;
+    --text: #161B22;
+    --text-muted: #57606E;
+    --border: #D8DEE4;
+    --accent: #1E5B63;
+    --accent-soft: #DCEAEA;
+    --data: #8A5A2B;
+    --data-soft: #F1E6D8;
+    --good: #2A7D4F;
+    --good-soft: #DFF0E6;
+    --bad: #B23B3B;
+    --bad-soft: #F6E1E1;
+    --code-bg: #EEF1F4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0F1417;
+      --surface: #161C20;
+      --surface-2: #1C2328;
+      --text: #E6EBEF;
+      --text-muted: #93A1AC;
+      --border: #2A3339;
+      --accent: #5FC4B9;
+      --accent-soft: #1B3736;
+      --data: #E0A362;
+      --data-soft: #362A1B;
+      --good: #5FCB8B;
+      --good-soft: #17301F;
+      --bad: #E38080;
+      --bad-soft: #3A2020;
+      --code-bg: #1C2328;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0F1417;
+    --surface: #161C20;
+    --surface-2: #1C2328;
+    --text: #E6EBEF;
+    --text-muted: #93A1AC;
+    --border: #2A3339;
+    --accent: #5FC4B9;
+    --accent-soft: #1B3736;
+    --data: #E0A362;
+    --data-soft: #362A1B;
+    --good: #5FCB8B;
+    --good-soft: #17301F;
+    --bad: #E38080;
+    --bad-soft: #3A2020;
+    --code-bg: #1C2328;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 56px 32px 120px;
+  }
+
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 14px;
+  }
+  h1.title {
+    font-family: "IBM Plex Serif", Georgia, serif;
+    font-size: clamp(30px, 4.2vw, 42px);
+    line-height: 1.14;
+    margin: 0 0 12px;
+    text-wrap: balance;
+    max-width: 20ch;
+  }
+  .subtitle { color: var(--text-muted); font-size: 17px; max-width: 60ch; margin: 0 0 30px; }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin: 0 0 40px;
+  }
+  .stat-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .stat-tile .label {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .stat-tile .value {
+    font-family: "IBM Plex Serif", Georgia, serif;
+    font-size: 28px;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+  }
+  .stat-tile .sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+  h2 {
+    font-family: "IBM Plex Serif", Georgia, serif;
+    font-size: 24px;
+    margin: 44px 0 16px;
+    text-wrap: balance;
+  }
+  h3 { font-family: "IBM Plex Serif", Georgia, serif; font-size: 18px; margin: 26px 0 8px; }
+  p { margin: 0 0 14px; max-width: 70ch; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 7px; max-width: 66ch; }
+  strong { font-weight: 600; }
+  em { color: var(--text-muted); }
+
+  code {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.88em;
+    background: var(--code-bg);
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+  }
+
+  .table-wrap { overflow-x: auto; margin: 0 0 20px; border: 1px solid var(--border); border-radius: 8px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  thead th {
+    background: var(--surface-2);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.num, th.num { font-variant-numeric: tabular-nums; font-family: "IBM Plex Mono", monospace; }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11.5px;
+    font-weight: 500;
+    padding: 2px 9px;
+    border-radius: 999px;
+  }
+  .pill.good { background: var(--good-soft); color: var(--good); }
+  .pill.bad { background: var(--bad-soft); color: var(--bad); }
+  .pill.neutral { background: var(--surface-2); color: var(--text-muted); }
+
+  .card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin: 0 0 16px;
+    background: var(--surface);
+  }
+  .card.correction { border-left: 3px solid var(--accent); }
+  .card.fail { border-left: 3px solid var(--bad); }
+  .card .card-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .card .card-head h3 { margin: 0; }
+  .card blockquote {
+    margin: 8px 0 12px;
+    padding: 10px 14px;
+    background: var(--surface-2);
+    border-radius: 6px;
+    font-style: italic;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+  .card p:last-child { margin-bottom: 0; }
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<div class="page">
+  <p class="eyebrow">Evaluation Report</p>
+  <h1 class="title">FAB Agent Evaluation</h1>
+  <p class="subtitle">23 test questions run end-to-end through the live multi-agent system — accuracy, retrieval quality, citation coverage, latency, and a transparent account of a grading bug I found and fixed mid-evaluation.</p>
+
+  <div class="stat-grid">
+    <div class="stat-tile"><div class="label">Combined accuracy</div><div class="value">87.0%</div><div class="sub">20 / 23 questions</div></div>
+    <div class="stat-tile"><div class="label">Auto-graded</div><div class="value">87.5%</div><div class="sub">14 / 16 questions</div></div>
+    <div class="stat-tile"><div class="label">Citation rate</div><div class="value">100%</div><div class="sub">18 / 18 needing retrieval</div></div>
+    <div class="stat-tile"><div class="label">Avg latency</div><div class="value">12.9s</div><div class="sub">per query, paid tier</div></div>
+    <div class="stat-tile"><div class="label">Avg tool calls</div><div class="value">3.17</div><div class="sub">per query</div></div>
+  </div>
+
+  <h2>Results by category</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Category</th><th class="num">Count</th><th>Accuracy</th><th class="num">Avg latency</th></tr></thead>
+      <tbody>
+        <tr><td>Simple factual</td><td class="num">6</td><td><span class="pill good">100%</span> 6/6</td><td class="num">11.1s</td></tr>
+        <tr><td>Calculation</td><td class="num">6</td><td><span class="pill good">83.3%</span> 5/6</td><td class="num">11.7s</td></tr>
+        <tr><td>Out-of-scope / ambiguous</td><td class="num">4</td><td><span class="pill bad">75%</span> 3/4</td><td class="num">4.5s</td></tr>
+        <tr><td>Multi-hop <em>(manual)</em></td><td class="num">4</td><td><span class="pill good">100%</span> 4/4</td><td class="num">17.7s</td></tr>
+        <tr><td>Temporal comparison <em>(manual)</em></td><td class="num">3</td><td><span class="pill bad">67%</span> 2/3</td><td class="num">23.4s</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Ground truth figures were hand-verified against the raw extracted PDF text before the eval ran (see <code>eval/extract_facts.py</code> and <code>eval/test_suite.json</code>'s notes field) — not generated or guessed by an LLM.</p>
+
+  <h2>A correction made mid-evaluation</h2>
+  <div class="card correction">
+    <div class="card-head"><h3>62.5% → 87.5%, with no new LLM calls</h3><span class="pill neutral">grading bug, not a system bug</span></div>
+    <p>The first eval run reported only 62.5% auto-gradable accuracy. Investigating the failures found the problem was mostly in my own grading script:</p>
+    <ol>
+      <li><strong>Unit-scale bug.</strong> Ground truth is in AED million, but the agent sometimes correctly answers in AED thousand (e.g. "AED 5,123,259 thousand" for a 5,120.263-million ground truth — the same figure). The original matcher compared raw digits only, so a numerically-correct answer in a different unit scored as wrong. Fixed by checking the extracted number at 1×, 1000×, and 0.001× scale.</li>
+      <li><strong>A genuine ground-truth labeling error, mine.</strong> SF-04 asked for "basic EPS for Q3 2024"; I had recorded <code>1.10</code> as ground truth, which is actually the <em>nine-month cumulative</em> EPS on the same filing line — the correct discrete three-month figure is <code>0.38</code>. The system's answer (<code>0.38</code>) was right; my test suite was wrong.</li>
+    </ol>
+    <p>Both fixes were applied to the grading logic and ground truth, then re-scored from the <strong>same saved model outputs</strong> — no re-running until a passing result appeared. Reported here in full rather than only showing the corrected number.</p>
+  </div>
+
+  <h2>Failure analysis</h2>
+
+  <div class="card fail">
+    <div class="card-head"><h3>CALC-04 — gave up rather than fabricating</h3><span class="pill bad">retrieval failure</span></div>
+    <blockquote>"What was the percentage growth in FAB's full-year net profit from 2022 to 2023?"</blockquote>
+    <p>The agent responded that the figures were "not available in the provided tool results." Not a hallucination — both FY2022 (AED 13,411.198M) and FY2023 (AED 16,405.493M) figures are in the corpus and were retrieved successfully by <em>other</em> questions in the same run. This question's particular search phrasing didn't surface them within the planner's iteration budget.</p>
+  </div>
+
+  <div class="card fail">
+    <div class="card-head"><h3>TEMP-01 — false "not available" after hitting the iteration cap</h3><span class="pill bad">retrieval + iteration cap</span></div>
+    <blockquote>"How did FAB's total assets change between the end of 2023 and the end of 2024?"</blockquote>
+    <p>Claimed FY2024 data "is not yet available" — incorrect; the FY2024 filing is in the corpus and was used correctly by other questions in this same run. The trace shows it ran the full 8-iteration cap and gathered 30 citations without landing on the specific Total Assets figure, then synthesized a false negative instead of "I searched extensively but could not confidently locate this." Connects to a limitation in the Architecture Document: Total Assets lives in a segment-reporting note, not a cleanly-labeled balance sheet line, and is harder for hybrid retrieval to surface than Net Profit or EPS.</p>
+  </div>
+
+  <div class="card fail">
+    <div class="card-head"><h3>AMBIG-01 — guesses a period instead of asking</h3><span class="pill bad">unaddressed gap</span></div>
+    <blockquote>"What was FAB's net profit?" (no period specified)</blockquote>
+    <p>Expected: ask which quarter/year, per the assignment's requirement that ambiguous queries prompt for clarification. Actual: picked the most recent period (FY2024) and answered directly. The planner's system prompt guards against fabricating <em>figures</em> but doesn't yet instruct it to recognize an <em>ambiguous scope</em> and ask before proceeding — a real, unaddressed gap, not yet fixed given time constraints.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>CALC-01 — correct within tolerance, surfaced a real basis inconsistency</h3><span class="pill good">passed, with a caveat</span></div>
+    <blockquote>"YoY change in Net Profit between Q3 2023 and Q3 2024?"</blockquote>
+    <p>Answered 5.03% against a 4.86% ground truth — both within the 5% tolerance. The gap: the agent's Q3 2023 figure was on an "attributable to shareholders" basis while Q3 2024 was "total incl. non-controlling interests" — each individually correct from its own filing, but not on a matched basis. This is exactly the corpus-level basis inconsistency documented as a known limitation: 2022–2023 filings only state the attributable figure; 2024 filings state the total. The system has no basis-normalization step yet.</p>
+  </div>
+
+  <h2>What worked well</h2>
+  <ul>
+    <li><strong>Simple factual retrieval: 100% (6/6)</strong>, exactly matching hand-verified ground truth once the eval script's unit bug was fixed.</li>
+    <li><strong>Multi-hop reasoning: 100% (4/4, manually verified)</strong> — correctly chained temporal resolution → multiple filtered searches → calculator calls → cited synthesis, including the assignment's own flagship query type (YoY comparison with explanation). One example chained a 3-year, 2-step growth calculation correctly in a single pass.</li>
+    <li><strong>Out-of-scope refusal</strong>: all 3 true out-of-scope questions (a different company, a future prediction, an unrelated topic) were correctly refused — the one failure in this bucket (AMBIG-01) is a distinct behavior (ambiguity handling) grouped in the same category.</li>
+    <li><strong>Citations: 100%</strong> of retrieval-based answers cited a real source/period/page; the calculator-only and refused questions correctly had none, since no retrieval was needed.</li>
+    <li><strong>Calculation tracing</strong>: every calculator call in every trace shows the exact formula and inputs used, satisfying the requirement literally.</li>
+  </ul>
+
+  <h2>Approaches tried</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Approach</th><th>Outcome</th></tr></thead>
+      <tbody>
+        <tr><td>TF-IDF only</td><td>Works, purely lexical, no semantic matching. Kept as the hybrid's lexical signal.</td></tr>
+        <tr><td>Gemini embeddings</td><td>Best theoretical quality, but the free-tier embedding quota was exhausted mid-ingestion three times — not viable on this project's timeline.</td></tr>
+        <tr><td>MiniLM only</td><td>Real semantic embeddings, zero quota risk — but alone it sometimes under-ranked the exact "Net profit for the period" line among dense financial tables.</td></tr>
+        <tr><td><strong>MiniLM + TF-IDF hybrid (RRF)</strong> — final</td><td>Combines semantic recall with lexical precision on domain figures. Verified: a query MiniLM alone missed moved into the top-2 results after adding TF-IDF.</td></tr>
+        <tr><td>Gemini 2.5 Flash, free tier</td><td>5 req/min <em>and</em> a 20 req/day cap, plus a depleted trial-credit balance — made a full 23-question eval impossible (one multi-hop query alone can need 4-9 calls).</td></tr>
+        <tr><td><strong>Gemini 2.5 Flash, paid tier</strong> — final</td><td>Both limits removed; the same query dropped from 80-150s to ~21s, and the full eval completed in minutes instead of 20-30+.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Cost and latency (measured, not estimated)</h2>
+  <p>Average latency was 12.9s/query across all 23 questions on the paid tier with minimal pacing, averaging 3.17 tool calls per query. Simple factual queries averaged 11.1s; temporal comparison queries, which chain the most tool calls, averaged 23.4s. At Gemini 2.5 Flash's published pricing (~$0.30/$2.50 per M tokens), running all 23 questions cost well under $0.50 total — consistent with the Architecture Document's per-query estimate of $0.01-0.03 for a multi-hop query.</p>
+</div>

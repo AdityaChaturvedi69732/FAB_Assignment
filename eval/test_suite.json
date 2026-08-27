@@ -1,0 +1,182 @@
+{
+  "notes": "Ground truth figures were hand-verified against the raw extracted PDF text (see eval/extract_facts.py output), cross-checking each figure against its restatement as a prior-year/prior-quarter comparative in a later filing wherever possible. Net profit has two reporting bases across the corpus: 'total' (including non-controlling interests, used on the primary income statement face in 2024 filings) and 'attributable to shareholders' (used in the EPS note, and the only basis stated on the face of 2022-2023 filings). Each ground_truth entry below states which basis and page it came from. Total Assets/Equity/Loans/Deposits from the primary balance sheet could not be reliably text-extracted (pdfplumber returned garbled text on those specific pages in these filings) - Total Assets figures below instead come from the segment-reporting note's Group total column, which reconciles to the balance sheet by IFRS 8 requirement, and were cross-validated against next-year comparatives where available.",
+  "questions": [
+    {
+      "id": "SF-01",
+      "category": "simple_factual",
+      "question": "What was FAB's net profit for Q1 2022?",
+      "ground_truth": {"value": 5120.263, "unit": "AED million", "basis": "attributable to shareholders", "source": "2022_Q1.pdf, p.25"}
+    },
+    {
+      "id": "SF-02",
+      "category": "simple_factual",
+      "question": "What was FAB's net profit for the full year 2022?",
+      "ground_truth": {"value": 13411.198, "unit": "AED million", "basis": "attributable to shareholders", "source": "FAB-FS-Q4-2022-English.pdf, p.73"}
+    },
+    {
+      "id": "SF-03",
+      "category": "simple_factual",
+      "question": "What was FAB's net profit for Q2 2023?",
+      "ground_truth": {"value": 4211.183, "unit": "AED million", "basis": "attributable to shareholders", "source": "FAB-FS-Q2-2023-English.pdf, p.24"}
+    },
+    {
+      "id": "SF-04",
+      "category": "simple_factual",
+      "question": "What was FAB's basic earnings per share for Q3 2024?",
+      "ground_truth": {"value": 0.38, "unit": "AED", "source": "FAB-FS-Q3-2024-English.pdf, p.21 (discrete three-month EPS column; 1.10 is the nine-month cumulative figure on the same line - corrected after the first eval run flagged this as a ground-truth labeling error, not a system error)"}
+    },
+    {
+      "id": "SF-05",
+      "category": "simple_factual",
+      "question": "What was FAB's total net profit (including non-controlling interests) for Q2 2024?",
+      "ground_truth": {"value": 4266, "unit": "AED million", "basis": "total incl. NCI", "source": "FAB-FS-Q2-2024-English.pdf, p.5"}
+    },
+    {
+      "id": "SF-06",
+      "category": "simple_factual",
+      "question": "What was FAB's net profit for the nine months ended 30 September 2024?",
+      "ground_truth": {"value": 12896, "unit": "AED million", "basis": "total incl. NCI", "source": "FAB-FS-Q3-2024-English.pdf, p.5"}
+    },
+    {
+      "id": "CALC-01",
+      "category": "calculation",
+      "question": "What was the year-over-year percentage change in Net Profit between Q3 2023 and Q3 2024?",
+      "ground_truth": {
+        "q3_2023": 4262, "q3_2024": 4469, "unit": "AED million", "basis": "total incl. NCI, both from the same filing's comparative columns",
+        "source": "FAB-FS-Q3-2024-English.pdf, p.5",
+        "pct_change": 4.86
+      }
+    },
+    {
+      "id": "CALC-02",
+      "category": "calculation",
+      "question": "What was the year-over-year percentage change in Net Profit between Q1 2023 and Q1 2024?",
+      "ground_truth": {
+        "q1_2023": 3933.688, "q1_2024": 4161.028, "unit": "AED million", "basis": "total incl. NCI, both from FAB-FS-Q1-2024's own statement",
+        "source": "FAB-FS-Q1-2024-English.pdf, p.5",
+        "pct_change": 5.78
+      }
+    },
+    {
+      "id": "CALC-03",
+      "category": "calculation",
+      "question": "What was the quarter-over-quarter change in Total Assets between Q2 2024 and Q3 2024?",
+      "ground_truth": {
+        "q2_2024": 1174619, "q3_2024": 1229616, "unit": "AED million",
+        "source": "FAB-FS-Q2-2024-English.pdf p.25 (segment note) and FAB-FS-Q3-2024-English.pdf p.24 (segment note)",
+        "pct_change": 4.68
+      }
+    },
+    {
+      "id": "CALC-04",
+      "category": "calculation",
+      "question": "What was the percentage growth in FAB's full-year net profit from 2022 to 2023?",
+      "ground_truth": {
+        "fy2022": 13411.198, "fy2023": 16405.493, "unit": "AED million", "basis": "attributable to shareholders",
+        "source": "FAB-FS-Q4-2023-English.pdf, p.72",
+        "pct_change": 22.33
+      }
+    },
+    {
+      "id": "TEMP-01",
+      "category": "temporal_comparison",
+      "question": "How did FAB's total assets change between the end of 2023 and the end of 2024?",
+      "ground_truth": {
+        "fy2023": 1168633, "fy2024": 1213247, "unit": "AED million",
+        "source": "FAB-FS-Q2-2024-English.pdf p.26 (FY2023 comparative) and FAB-FS-Q4-2024-English.pdf p.72",
+        "pct_change": 3.82
+      }
+    },
+    {
+      "id": "TEMP-02",
+      "category": "temporal_comparison",
+      "question": "Compare FAB's net profit growth trajectory across the last three fiscal years (2022, 2023, 2024).",
+      "ground_truth": {
+        "fy2022": 13411.198, "fy2023": 16405.493, "fy2024": 17096, "unit": "AED million",
+        "source": "FAB-FS-Q4-2022/2023/2024-English.pdf",
+        "note": "2022/2023 figures are on an attributable-to-shareholders basis; 2024 figure is total incl. NCI - answer should ideally flag this basis difference."
+      }
+    },
+    {
+      "id": "TEMP-03",
+      "category": "temporal_comparison",
+      "question": "What was FAB's net profit in each of the last 4 quarters reported (Q4 2023 through Q3 2024)?",
+      "ground_truth": {
+        "note": "Depends on which periods are 'available' at query time; with this corpus the last 4 quarters are Q4 2023 (FY cumulative, not a discrete quarter figure), Q1 2024, Q2 2024, Q3 2024. The system should recognize that FAB's Q4 filing reports full-year figures, not a discrete quarter figure, and flag this rather than silently treating FY2023 as a quarterly number.",
+        "q1_2024": 4161.028, "q2_2024": 4266, "q3_2024": 4469, "unit": "AED million"
+      }
+    },
+    {
+      "id": "MULTIHOP-01",
+      "category": "multi_hop",
+      "question": "Which had higher net profit growth year-over-year: Q1 2024 vs Q1 2023, or Q2 2024 vs Q2 2023?",
+      "ground_truth": {
+        "q1_growth_pct": 5.78, "q2_growth_pct": 1.30,
+        "q1_2023": 3933.688, "q1_2024": 4161.028,
+        "q2_2023": 4211.183, "q2_2024": 4266,
+        "answer": "Q1 2024 vs Q1 2023 had higher growth (5.78%) than Q2 2024 vs Q2 2023 (1.30%, on a mixed-basis comparison since Q2 2023's figure here is attributable-basis and Q2 2024's is total-basis; a rigorous same-basis comparison would use Q2 2023 total 4,211 vs Q2 2024 total 4,266 = 1.31%)."
+      }
+    },
+    {
+      "id": "MULTIHOP-02",
+      "category": "multi_hop",
+      "question": "By how much did FAB's nine-month cumulative net profit grow from 2022 to 2023 to 2024?",
+      "ground_truth": {
+        "9m_2022": 10948.735, "9m_2023": 12394.975, "9m_2024": 12896,
+        "growth_2022_to_2023_pct": 13.21, "growth_2023_to_2024_pct": 4.04
+      }
+    },
+    {
+      "id": "MULTIHOP-03",
+      "category": "multi_hop",
+      "question": "What was FAB's basic EPS in Q3 2022 and Q3 2024, and what was the growth?",
+      "ground_truth": {
+        "eps_q3_2022": 0.25, "eps_q3_2024": 1.10, "unit": "AED",
+        "source": "FAB-FS-Q3-2022-English.pdf p.6 and FAB-FS-Q3-2024-English.pdf p.5",
+        "note": "0.25 -> 1.10 is a large jump; driven mainly by cumulative 9-month EPS reporting conventions and share count - flagged here as a case where the system should show its work rather than stating a bare percentage."
+      }
+    },
+    {
+      "id": "RATIO-01",
+      "category": "calculation",
+      "question": "If FAB's net income for a quarter is AED 4,469 million and shareholder equity is AED 165,000 million, what is the ROE for that quarter?",
+      "ground_truth": {"net_income": 4469, "shareholder_equity": 165000, "quarterly_roe_pct": 2.71, "note": "Synthetic inputs (equity not reliably extracted from this corpus) - tests the calculator tool's ROE formula correctness in isolation, not retrieval. Not annualized."}
+    },
+    {
+      "id": "RATIO-02",
+      "category": "calculation",
+      "question": "If FAB's total loans are AED 850,000 million and total deposits are AED 780,000 million, what is the loan-to-deposit ratio?",
+      "ground_truth": {"total_loans": 850000, "total_deposits": 780000, "ratio_pct": 108.97, "note": "Synthetic inputs (deposits/loans headline figures not reliably extracted from this corpus's balance sheet pages) - tests the calculator tool in isolation."}
+    },
+    {
+      "id": "RISK-01",
+      "category": "multi_hop",
+      "question": "What were the main risk factors FAB discussed in its risk management notes, and were they mentioned consistently across 2023 quarters?",
+      "ground_truth": {"note": "Open-ended; graded on whether the system retrieves passages tagged section='Risk Management' from multiple 2023 quarter filings and synthesizes rather than fabricating specific 'top 3' risks not actually named in these filings (which are financial statements, not the fuller annual report risk section)."}
+    },
+    {
+      "id": "OOS-01",
+      "category": "out_of_scope",
+      "question": "What was JPMorgan's net profit in Q3 2023?",
+      "ground_truth": {"expected_behavior": "refuse / state that JPMorgan is not covered by this corpus (FAB-only)"}
+    },
+    {
+      "id": "OOS-02",
+      "category": "out_of_scope",
+      "question": "What will FAB's net profit be in Q4 2025?",
+      "ground_truth": {"expected_behavior": "refuse / state this is a future period not covered by any filing in the corpus, decline to speculate"}
+    },
+    {
+      "id": "OOS-03",
+      "category": "out_of_scope",
+      "question": "What is the weather like in Abu Dhabi today?",
+      "ground_truth": {"expected_behavior": "refuse / state this is unrelated to FAB's financial statements"}
+    },
+    {
+      "id": "AMBIG-01",
+      "category": "out_of_scope",
+      "question": "What was FAB's net profit?",
+      "ground_truth": {"expected_behavior": "ask for clarification on which period, since no quarter/year was specified, rather than guessing one"}
+    }
+  ]
+}

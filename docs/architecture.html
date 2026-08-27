@@ -1,0 +1,514 @@
+<title>FAB Agent Blueprint</title>
+<style>
+  :root {
+    --bg: #F4F6F8;
+    --surface: #FFFFFF;
+    --surface-2: #EEF1F4;
+    --text: #161B22;
+    --text-muted: #57606E;
+    --border: #D8DEE4;
+    --accent: #1E5B63;
+    --accent-soft: #DCEAEA;
+    --data: #8A5A2B;
+    --data-soft: #F1E6D8;
+    --code-bg: #EEF1F4;
+    --shadow: 0 1px 2px rgba(22, 27, 34, 0.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0F1417;
+      --surface: #161C20;
+      --surface-2: #1C2328;
+      --text: #E6EBEF;
+      --text-muted: #93A1AC;
+      --border: #2A3339;
+      --accent: #5FC4B9;
+      --accent-soft: #1B3736;
+      --data: #E0A362;
+      --data-soft: #362A1B;
+      --code-bg: #1C2328;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0F1417;
+    --surface: #161C20;
+    --surface-2: #1C2328;
+    --text: #E6EBEF;
+    --text-muted: #93A1AC;
+    --border: #2A3339;
+    --accent: #5FC4B9;
+    --accent-soft: #1B3736;
+    --data: #E0A362;
+    --data-soft: #362A1B;
+    --code-bg: #1C2328;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 56px 32px 120px;
+    display: grid;
+    grid-template-columns: 220px minmax(0, 720px);
+    gap: 64px;
+    justify-content: center;
+  }
+
+  @media (max-width: 880px) {
+    .page { grid-template-columns: 1fr; }
+    nav.toc { display: none; }
+  }
+
+  header.masthead {
+    grid-column: 1 / -1;
+    margin-bottom: 8px;
+  }
+
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 14px;
+  }
+
+  h1.title {
+    font-family: "IBM Plex Serif", Georgia, serif;
+    font-size: clamp(32px, 4.5vw, 46px);
+    line-height: 1.12;
+    margin: 0 0 12px;
+    text-wrap: balance;
+    max-width: 18ch;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 18px;
+    max-width: 56ch;
+    margin: 0 0 22px;
+  }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+  }
+  .meta-row span b { color: var(--text); font-weight: 600; }
+
+  nav.toc {
+    position: sticky;
+    top: 40px;
+    align-self: start;
+    font-size: 13.5px;
+  }
+  nav.toc .toc-label {
+    font-family: "IBM Plex Mono", monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  nav.toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: toc;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  nav.toc li { counter-increment: toc; }
+  nav.toc a {
+    color: var(--text-muted);
+    text-decoration: none;
+    display: flex;
+    gap: 8px;
+  }
+  nav.toc a:hover { color: var(--accent); }
+  nav.toc a::before {
+    content: counter(toc);
+    font-family: "IBM Plex Mono", monospace;
+    color: var(--accent);
+    min-width: 1.4em;
+  }
+
+  main { min-width: 0; }
+
+  section { margin-bottom: 52px; scroll-margin-top: 32px; }
+
+  h2 {
+    font-family: "IBM Plex Serif", Georgia, serif;
+    font-size: 26px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin: 0 0 18px;
+    text-wrap: balance;
+  }
+  h2 .num {
+    font-family: "IBM Plex Mono", monospace;
+    color: var(--accent);
+    font-size: 16px;
+  }
+
+  h3 {
+    font-family: "IBM Plex Serif", Georgia, serif;
+    font-size: 19px;
+    margin: 28px 0 10px;
+  }
+
+  p { margin: 0 0 14px; max-width: 68ch; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 7px; max-width: 64ch; }
+  strong { font-weight: 600; }
+
+  code {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.88em;
+    background: var(--code-bg);
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+  }
+  pre {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 13px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    line-height: 1.55;
+  }
+  pre code { background: none; padding: 0; }
+
+  .table-wrap { overflow-x: auto; margin: 0 0 20px; border: 1px solid var(--border); border-radius: 8px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+  th, td {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  thead th {
+    background: var(--surface-2);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.num, th.num { font-variant-numeric: tabular-nums; font-family: "IBM Plex Mono", monospace; color: var(--data); }
+
+  .callout {
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin: 0 0 20px;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout .label {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--accent);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  figure { margin: 0 0 24px; }
+  figure svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  figcaption {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 10px;
+    max-width: 68ch;
+  }
+
+  .diagram-text { font-family: "IBM Plex Mono", monospace; }
+  .diagram-label { font-family: "IBM Plex Sans", sans-serif; font-size: 11px; }
+
+  ol.numbered-limits { counter-reset: lim; list-style: none; padding-left: 0; }
+  ol.numbered-limits li {
+    counter-increment: lim;
+    position: relative;
+    padding-left: 34px;
+    margin-bottom: 16px;
+  }
+  ol.numbered-limits li::before {
+    content: counter(lim);
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-family: "IBM Plex Mono", monospace;
+    color: var(--data);
+    background: var(--data-soft);
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+  }
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="eyebrow">Architecture Document</p>
+    <h1 class="title">FAB Agent Blueprint</h1>
+    <p class="subtitle">System design for a multi-agent financial analysis pipeline over First Abu Dhabi Bank's quarterly filings — planner, retrieval, calculator, and temporal agents orchestrated behind a citation-first synthesis layer.</p>
+    <div class="meta-row">
+      <span><b>Corpus</b> 12 filings · 2,421 chunks</span>
+      <span><b>Orchestration</b> LangGraph</span>
+      <span><b>LLM</b> Gemini 2.5 Flash (paid tier)</span>
+      <span><b>Retrieval</b> MiniLM + TF-IDF hybrid</span>
+      <span><b>Eval accuracy</b> 87.0% (20/23)</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <p class="toc-label">Contents</p>
+    <ol>
+      <li><a href="#objective">Objective</a></li>
+      <li><a href="#architecture">System architecture</a></li>
+      <li><a href="#tech">Technology choices</a></li>
+      <li><a href="#data">Data processing</a></li>
+      <li><a href="#capabilities">Capabilities vs. requirements</a></li>
+      <li><a href="#cost">Cost estimation</a></li>
+      <li><a href="#scale">Scalability</a></li>
+      <li><a href="#limitations">Known limitations</a></li>
+      <li><a href="#future">Future improvements</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <section id="objective">
+      <h2><span class="num">01</span> Objective</h2>
+      <p>A multi-agent system that answers complex, multi-hop, calculation-heavy questions about First Abu Dhabi Bank's (FAB) quarterly and annual financial statements — going beyond single-pass retrieval-augmented generation by orchestrating retrieval, deterministic calculation, and temporal reasoning behind a planning LLM, then synthesizing a cited, verifiable answer.</p>
+    </section>
+
+    <section id="architecture">
+      <h2><span class="num">02</span> System architecture</h2>
+
+      <figure>
+        <svg viewBox="0 0 900 640" role="img" aria-label="A user question reaches a Planner Agent, which dispatches to a Retrieval, Calculator, or Temporal agent, loops the result back to itself, and once satisfied hands off to a Synthesis Agent that produces the final cited answer.">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+            </marker>
+            <marker id="arrowAccent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+            </marker>
+          </defs>
+
+          <!-- User question -->
+          <rect x="330" y="24" width="240" height="52" rx="8" fill="none" stroke="currentColor" stroke-width="1.4"/>
+          <text x="450" y="55" text-anchor="middle" class="diagram-text" font-size="13" fill="currentColor">User question</text>
+
+          <line x1="450" y1="76" x2="450" y2="112" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrow)"/>
+
+          <!-- Planner -->
+          <rect x="300" y="114" width="300" height="66" rx="8" fill="none" stroke="var(--accent)" stroke-width="2"/>
+          <text x="450" y="140" text-anchor="middle" class="diagram-text" font-size="13.5" font-weight="600" fill="var(--accent)">Planner Agent</text>
+          <text x="450" y="160" text-anchor="middle" class="diagram-label" fill="currentColor">Gemini 2.5 Flash · function calling</text>
+
+          <line x1="450" y1="180" x2="450" y2="222" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrow)"/>
+          <text x="466" y="205" class="diagram-label" fill="currentColor">selects a tool</text>
+
+          <!-- Tool row -->
+          <rect x="60" y="224" width="220" height="72" rx="8" fill="none" stroke="currentColor" stroke-width="1.4"/>
+          <text x="170" y="252" text-anchor="middle" class="diagram-text" font-size="12.5" font-weight="600" fill="currentColor">Retrieval Agent</text>
+          <text x="170" y="270" text-anchor="middle" class="diagram-label" fill="currentColor">hybrid MiniLM + TF-IDF,</text>
+          <text x="170" y="284" text-anchor="middle" class="diagram-label" fill="currentColor">period + section filters</text>
+
+          <rect x="340" y="224" width="220" height="72" rx="8" fill="none" stroke="currentColor" stroke-width="1.4"/>
+          <text x="450" y="252" text-anchor="middle" class="diagram-text" font-size="12.5" font-weight="600" fill="currentColor">Calculator Agent</text>
+          <text x="450" y="270" text-anchor="middle" class="diagram-label" fill="currentColor">%-change, ROE,</text>
+          <text x="450" y="284" text-anchor="middle" class="diagram-label" fill="currentColor">loan/deposit — traced</text>
+
+          <rect x="620" y="224" width="220" height="72" rx="8" fill="none" stroke="currentColor" stroke-width="1.4"/>
+          <text x="730" y="252" text-anchor="middle" class="diagram-text" font-size="12.5" font-weight="600" fill="currentColor">Temporal Agent</text>
+          <text x="730" y="270" text-anchor="middle" class="diagram-label" fill="currentColor">resolves quarters,</text>
+          <text x="730" y="284" text-anchor="middle" class="diagram-label" fill="currentColor">YoY / QoQ pairs</text>
+
+          <!-- feedback loop back to planner -->
+          <path d="M 170 224 C 170 200, 120 130, 298 148" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+          <path d="M 730 224 C 730 195, 760 130, 602 148" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+          <text x="450" y="332" text-anchor="middle" class="diagram-label" fill="currentColor">tool result appended to conversation history → loop back to Planner</text>
+
+          <!-- exit to synthesis -->
+          <line x1="450" y1="180" x2="450" y2="188" stroke="none"/>
+          <path d="M 600 147 C 700 190, 700 330, 600 380" fill="none" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#arrowAccent)"/>
+          <text x="716" y="270" text-anchor="middle" class="diagram-label" fill="var(--accent)">finish_with_answer</text>
+          <text x="716" y="284" text-anchor="middle" class="diagram-label" fill="var(--accent)">or max iterations</text>
+
+          <!-- Synthesis -->
+          <rect x="300" y="384" width="300" height="66" rx="8" fill="none" stroke="var(--accent)" stroke-width="2"/>
+          <text x="450" y="410" text-anchor="middle" class="diagram-text" font-size="13.5" font-weight="600" fill="var(--accent)">Synthesis Agent</text>
+          <text x="450" y="430" text-anchor="middle" class="diagram-label" fill="currentColor">cites sources · shows calculation · flags uncertainty</text>
+
+          <line x1="450" y1="450" x2="450" y2="490" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrow)"/>
+
+          <!-- Final answer -->
+          <rect x="270" y="492" width="360" height="60" rx="8" fill="none" stroke="currentColor" stroke-width="1.4"/>
+          <text x="450" y="518" text-anchor="middle" class="diagram-text" font-size="13" fill="currentColor">Final cited answer</text>
+          <text x="450" y="536" text-anchor="middle" class="diagram-label" fill="currentColor">+ full tool-call trace</text>
+        </svg>
+        <figcaption>The Planner Agent loops with the Retrieval, Calculator, and Temporal agents — each tool result is appended to the shared history and re-offered to the planner — until it signals completion or hits the 8-iteration cap, then hands off once to the Synthesis Agent.</figcaption>
+      </figure>
+
+      <p>Implemented as a <strong>LangGraph</strong> <code>StateGraph</code> with two node types (<code>planner</code>, <code>synthesize</code>) and a conditional edge that loops the planner back to itself after each tool call, until it signals <code>finish_with_answer</code> or a hard iteration cap (<code>MAX_ITERATIONS = 8</code>) is hit. The "multiple specialized agents" requirement is satisfied by role separation, not node count: the <strong>Planner</strong> is the orchestrating agent (decides what to do next); <strong>Retrieval</strong>, <strong>Calculator</strong>, and <strong>Temporal</strong> are specialist agents invoked as tools with their own well-defined responsibilities; the <strong>Synthesis</strong> agent is a distinct final LLM call with a different system prompt (citation + uncertainty discipline) operating over accumulated evidence rather than deciding what to fetch next.</p>
+    </section>
+
+    <section id="tech">
+      <h2><span class="num">03</span> Technology choices &amp; justification</h2>
+
+      <h3>Framework — LangGraph</h3>
+      <p>Chosen because the assignment explicitly recommends it, and because the planner-loop-until-done pattern maps directly onto a <code>StateGraph</code> with a conditional edge — no need for LangChain's heavier agent abstractions. The state object (<code>AgentState</code>) carries the full conversation history, tool-call trace, and citations, which made "calculation tracing" and "source citation" straightforward: every tool call and result is appended to the trace, and the trace ships back to the API/UI layer verbatim.</p>
+
+      <h3>LLM — Gemini 2.5 Flash</h3>
+      <ul>
+        <li><strong>Cost.</strong> Production pricing (~$0.30/M input tokens, ~$2.50/M output tokens) is roughly 5–10× cheaper than GPT-4o/Claude Sonnet for comparable function-calling quality. Measured, not estimated: the full 23-question evaluation suite cost well under $0.50 total.</li>
+        <li><strong>Reasoning / tool use.</strong> Reliable native function calling, verified directly against all 9 declared tools — correctly sequences multi-step plans (see the Q3 2023→2024 YoY example in the Evaluation Report, which chained a temporal lookup, two filtered searches, and a calculator call unprompted).</li>
+        <li><strong>The constraint that forced this choice.</strong> This development sandbox's network policy allow-lists only a small set of hosts (PyPI, npm, Anthropic's API, a few others). Hugging Face, OpenAI, Cohere, Mistral, Groq, Together AI, Fireworks, OpenRouter, DeepInfra, Perplexity, and Cerebras were all tested and blocked; Google's Gemini API was reachable. Given the assignment permits GPT, Claude, Llama, or Kimi K2, Gemini was the only one that could actually be exercised end-to-end from this environment — not necessarily the only valid choice without that constraint.</li>
+        <li><strong>Free tier was not viable for this project — moved to paid.</strong> Live development hit two separate hard limits on the free tier: 5 requests/minute, and a much more restrictive <strong>20 requests/day</strong> cap (plus a small trial-credit balance that depleted entirely) — together making a full evaluation run impossible, since one multi-hop query alone can need 4–9 LLM calls. Enabling billing (a one-time $10 minimum prepayment, of which the entire project's usage to date has consumed a small fraction) removed both limits: the same query that took 80–150s under free-tier rate-limit pacing dropped to ~21s, and the full 23-question eval completed in a few minutes instead of 20–30+. This is documented as a real cost-planning data point for anyone evaluating Gemini for a similar project, not smoothed over.</li>
+      </ul>
+
+      <div class="callout">
+        <span class="label">Engineering trade-off</span>
+        <h3 style="margin-top:0">Embeddings — hybrid MiniLM + TF-IDF, not Gemini embeddings</h3>
+        <p>This went through three iterations, each forced by something discovered empirically rather than assumed. The system was <strong>designed and initially implemented with real Gemini embeddings</strong> (<code>gemini-embedding-001</code>, 768-dim) and verified working in isolation. Ingesting the full corpus (12 filings → 2,421 chunks) requires embedding every chunk, and repeated attempts hit two distinct free-tier limits: a <code>1,000 requests/day</code> cap, and a second, much lower ceiling that rejected batches of even 5–20 items with <code>429 RESOURCE_EXHAUSTED</code>, while single-item calls kept succeeding — consistent with a token/instance-based sub-quota beneath the headline daily quota. After three failed ingestion attempts, this was abandoned as a dependency (the code path still exists behind <code>EMBEDDING_PROVIDER=gemini</code> for a paid-tier deployment).</p>
+        <p><strong>Second iteration — TF-IDF only.</strong> Fully offline, zero quota risk, but purely lexical.</p>
+        <p><strong>Third iteration — a genuine open-source model, found by testing infrastructure, not giving up on quality.</strong> Hugging Face itself is blocked by this sandbox's network policy, but Chroma's bundled ONNX build of <code>sentence-transformers/all-MiniLM-L6-v2</code> downloads its weights from an S3 mirror (<code>chroma-onnx-models.s3.amazonaws.com</code>), which <em>is</em> reachable — confirmed by directly testing that URL rather than assuming Hugging Face's block meant every open-source model was unreachable. This gives real semantic embeddings (384-dim), fully local after a one-time ~80MB download, zero ongoing cost or quota risk.</p>
+        <p><strong>MiniLM alone still wasn't enough</strong> — verified empirically, not assumed: a query for "net profit" that a plain lexical match found immediately sometimes failed to rank in MiniLM's top-5 results, because a small general-purpose sentence model has no special affinity for text buried in dense financial tables. The final design runs <strong>both</strong>: MiniLM embeddings in Chroma (semantic recall) plus a TF-IDF sidecar index built at ingestion time (<code>app/ingest.py</code>, saved to <code>data/tfidf_sidecar.joblib</code>), merged at query time via <strong>Reciprocal Rank Fusion</strong> (<code>app/tools/retrieval.py</code>) — a standard, well-regarded hybrid-search technique, not a workaround dressed up as one. Verified fix: the same query that MiniLM alone failed to surface moved into the top-2 hybrid results.</p>
+        <p>Every chunk is also prefixed with its detected <code>[period | section]</code> tag before indexing (e.g. <code>[Q3 2023 | Income Statement]</code>), because the filings say "three months ended 30 September 2023" rather than "Q3 2023" — without this, a query naming a quarter would match nothing lexically. Combined with the Temporal Agent's exact-period <code>where</code> filtering, this closes most of the remaining gap for this vocabulary-constrained domain.</p>
+      </div>
+
+      <h3>Vector DB — ChromaDB</h3>
+      <p>Local, file-based, zero infrastructure to stand up, <code>cosine</code> similarity space configured explicitly. Holds the MiniLM embeddings; the TF-IDF sidecar for hybrid search lives alongside it as a separate joblib artifact (TF-IDF's sparse vectors don't fit Chroma's dense-vector model, so it's queried directly with a masked dot-product rather than through Chroma). Metadata filtering (<code>where={period, section}</code>) is used directly by the Retrieval Agent on the Chroma side — how the system narrows to the exact filing before ever asking the LLM to reason over the result.</p>
+
+      <h3>Document parsing — pdfplumber</h3>
+      <p>Direct table + text extraction with no external service dependency (avoiding an additional quota-risk surface under time pressure, per the embeddings experience above). Section detection uses regex header-matching per page (<em>"Statement of Financial Position"</em> → Balance Sheet, etc.), carrying the last detected header forward across pages without a repeated heading.</p>
+    </section>
+
+    <section id="data">
+      <h2><span class="num">04</span> Data processing &amp; ingestion</h2>
+      <ol>
+        <li><strong>Extraction.</strong> <code>pdfplumber</code> pulls per-page text and tables; tables are flattened to <code>" | "</code>-joined rows and appended to the page's text so figures inside tables aren't lost to text-extraction gaps.</li>
+        <li><strong>Section tagging.</strong> Regex header matching against 9 known FAB filing section types (Income Statement, Balance Sheet, Cash Flow Statement, Changes in Equity, Comprehensive Income, Risk Management, Notes, Auditor's Report, Management Discussion), carried forward page-to-page.</li>
+        <li><strong>Metadata enrichment.</strong> Every chunk carries <code>source</code>, <code>period</code> (e.g. <code>Q3 2023</code>), <code>page</code>, <code>section</code>, and <code>report_type</code> (Financial Statement / Earnings Presentation / Results Call) — the corpus is currently 100% Financial Statements, but the field is populated and filterable for when other report types are added.</li>
+        <li><strong>Chunking.</strong> Character-window chunking (1,400 chars, 200 overlap) per page, not a fixed global chunker — keeps chunks aligned to a single page's section tag rather than spanning a boundary.</li>
+        <li><strong>Vector DB write.</strong> Batched <code>collection.add()</code> into a single Chroma collection (<code>fab_financial_statements</code>), <code>hnsw:space=cosine</code>.</li>
+      </ol>
+      <p>Result: <strong>12 filings → 2,421 chunks</strong>, fully re-ingestable via <code>python -m app.ingest</code> (also accepts <code>--zip path.zip</code> to drop in additional documents).</p>
+    </section>
+
+    <section id="capabilities">
+      <h2><span class="num">05</span> Capabilities vs. requirements</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Requirement</th><th>Implementation</th></tr></thead>
+          <tbody>
+            <tr><td>Multi-hop reasoning</td><td>Planner loops across multiple tool calls before synthesizing; verified end-to-end on the assignment's own Q3 2023→2024 YoY example (temporal resolution, 2 filtered searches, 1 calculation).</td></tr>
+            <tr><td>Calculation accuracy + tracing</td><td>All arithmetic goes through <code>app/tools/calculator.py</code> — AST-restricted evaluation plus named formulas for %-change, ROE, loan-to-deposit — never LLM mental math. Every call records formula, inputs, and result.</td></tr>
+            <tr><td>Source citation</td><td>Every retrieval hit's source, period, page, and section is captured in the citation trail; the Synthesis Agent's prompt requires citing each figure inline.</td></tr>
+            <tr><td>Uncertainty handling</td><td>Prompts instruct: never fabricate a figure not backed by a tool result; state missing evidence rather than guess. Tested via out-of-scope and ambiguous-period questions.</td></tr>
+            <tr><td>Hallucination prevention</td><td>Structural, not just prompted — the planner cannot state a number without it entering history via a retrieval or calculator result.</td></tr>
+            <tr><td>Metadata filtering</td><td><code>period</code> and <code>section</code> are first-class Chroma filters, used automatically by the Temporal Agent's resolved periods.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="cost">
+      <h2><span class="num">06</span> Cost estimation</h2>
+      <p>Measured directly from the 23-question evaluation run (see the Evaluation Report), not purely estimated, using Gemini 2.5 Flash pricing (~$0.30/M input tokens, ~$2.50/M output tokens) and MiniLM/TF-IDF embeddings ($0 marginal cost, fully local):</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Scenario</th><th class="num">Measured</th></tr></thead>
+          <tbody>
+            <tr><td>Full 23-question eval suite, total cost</td><td class="num">&lt; $0.50</td></tr>
+            <tr><td>Average latency per query (paid tier)</td><td class="num">12.9s</td></tr>
+            <tr><td>Average tool calls per query</td><td class="num">3.17</td></tr>
+            <tr><td>Simple factual query avg latency</td><td class="num">11.1s</td></tr>
+            <tr><td>Temporal comparison query avg latency (most tool calls)</td><td class="num">23.4s</td></tr>
+            <tr><td>Full ingestion (2,421 chunks, MiniLM + TF-IDF, fully local)</td><td class="num">$0 · ~1 min</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Extrapolating to "thousands of queries per day" (the assignment's production framing) at the measured ~$0.02/query average: roughly <strong>$20-60/day</strong>. Cheap in absolute terms — throughput headroom on the paid tier, not cost, is the real production planning question (see Scalability below).</p>
+    </section>
+
+    <section id="scale">
+      <h2><span class="num">07</span> Scalability considerations</h2>
+      <p><strong>Rate limits were the binding constraint during development, resolved by moving to a paid tier.</strong> The free tier's hard caps — <code>gemini-2.5-flash</code> at 5 requests/minute <em>and</em> 20 requests/day — were hit live and made a multi-hop query take 40–150+ seconds (explicit call pacing plus retry-with-backoff parsing the API's suggested <code>retryDelay</code> in <code>app/gemini_client.py: generate_content</code>) and made a full 23-question eval run impossible. Enabling billing removed both limits immediately, measured: the same query dropped to ~21s and the full eval completed in minutes. The pacing code is still in place as a 1-second safety margin (<code>_MIN_SECONDS_BETWEEN_GENERATE_CALLS</code>) but is no longer load-bearing at the current query volume.</p>
+      <ul>
+        <li><strong>Horizontal scaling.</strong> The FastAPI service is stateless per request (Chroma and the TF-IDF vectorizer load once as module-level singletons); multiple worker processes behind a load balancer is a standard scale-out with no architectural change.</li>
+        <li><strong>Vector DB.</strong> Chroma's local file-based mode is adequate for this corpus (2,421 chunks) but would move to a hosted/clustered vector DB (Pinecone, Qdrant, Chroma server mode) for a much larger corpus or multi-instance deployment sharing one index.</li>
+        <li><strong>Caching.</strong> Repeated or near-duplicate questions aren't currently cached; a question-normalization + response cache would cut both cost and rate-limit pressure significantly in production.</li>
+      </ul>
+    </section>
+
+    <section id="limitations">
+      <h2><span class="num">08</span> Known limitations</h2>
+      <ol class="numbered-limits">
+        <li><strong>MiniLM is a small, general-purpose embedding model</strong> with no special affinity for dense financial tables — verified empirically to sometimes under-rank the exact relevant line among a page full of numbers. The TF-IDF hybrid (§3) recovers most of this, and the evaluation suite's 100% simple-factual accuracy shows it works well enough in practice, but it is not as strong as a domain-tuned or larger embedding model would be.</li>
+        <li><strong>Balance-sheet figures (Total Assets, Total Equity, Total Loans, Total Deposits) could not be reliably text-extracted</strong> from several filings' primary balance sheet pages — <code>pdfplumber</code> returned garbled/reordered text on some of those specific pages. Net Profit and EPS figures, which appear in more text-extractable contexts, were reliably extracted and hand-verified; Total Assets was recovered instead from the segment-reporting note's Group total column, which reconciles to the balance sheet under IFRS 8 but required extra cross-validation. Loan-to-deposit and ROE test questions accordingly use synthetic inputs to test the calculator tool in isolation — see the Evaluation Report. This limitation directly caused the one temporal-comparison eval failure (a false "data not available" on a total-assets question, documented in the Evaluation Report).</li>
+        <li><strong>Net Profit basis inconsistency across years</strong> — 2022–2023 filings state only "attributable to shareholders" net profit on the face of the statement; 2024 filings state the "total" figure (including non-controlling interests), with the attributable figure appearing separately in the EPS note. The system does not currently detect or normalize this basis difference automatically — it caused one eval question to land within tolerance but off by 0.17 percentage points due to a basis mismatch across the two compared quarters (see Evaluation Report, CALC-01).</li>
+        <li><strong>Ambiguous-scope questions are guessed, not clarified</strong> — found directly in evaluation: "What was FAB's net profit?" (no period given) was answered with the most recent quarter's figure rather than a request for clarification, despite the assignment explicitly asking for the latter behavior on ambiguous queries. The planner's current instructions guard against fabricating figures but don't yet flag an under-specified question scope.</li>
+        <li><strong>The planner can exhaust its iteration budget and report a false negative</strong> rather than an honest "I searched but couldn't confirm this" — observed directly in evaluation (see Evaluation Report, TEMP-01): 8 iterations and 30 citations gathered, still concluded data was unavailable when it in fact existed in the corpus.</li>
+        <li><strong>No self-reflection / error-recovery loop</strong> (bonus item, not implemented) — the planner does not critique its own answer before finalizing; <code>MAX_ITERATIONS = 8</code> is a hard stop, not an adaptive one.</li>
+        <li><strong>Single-turn conversations only</strong> — no multi-turn memory across separate API calls; each request is independent.</li>
+      </ol>
+    </section>
+
+    <section id="future">
+      <h2><span class="num">09</span> Future improvements</h2>
+      <ul>
+        <li><strong>Add an ambiguity check to the planner prompt</strong> — the single highest-value fix identified by evaluation: recognize an under-specified period/scope and call <code>finish_with_answer</code> with a clarification request instead of guessing (Evaluation Report, AMBIG-01).</li>
+        <li><strong>Replace a false "not available" with an honest "I searched but couldn't confirm"</strong> when the iteration cap is hit without success, rather than letting the synthesis step interpret exhausted iterations as proof of absence (Evaluation Report, TEMP-01).</li>
+        <li>Add a table-focused parser (LlamaParse / Unstructured.io) specifically for balance-sheet pages that <code>pdfplumber</code> mis-extracts, to make Total Assets/Equity/Loans/Deposits as reliable as Net Profit/EPS.</li>
+        <li>Add a basis-normalization step (attributable vs. total incl. NCI) when comparing net profit across the 2023/2024 filing-convention boundary — currently causes small (sub-tolerance) discrepancies, per CALC-01 in the Evaluation Report.</li>
+        <li>Switch <code>EMBEDDING_PROVIDER=gemini</code> for potentially even stronger semantic retrieval, now that billing is enabled (code path already implemented and tested) — would need an A/B comparison against the current MiniLM+TF-IDF hybrid to justify the added complexity and quota exposure.</li>
+        <li>Add response caching keyed on normalized question + resolved periods.</li>
+        <li>Add a Visualization Agent (bonus item) to render trend charts for multi-quarter comparison questions.</li>
+      </ul>
+    </section>
+
+  </main>
+</div>
